@@ -1,6 +1,6 @@
 NGINX_VERSION=1.10.2
 #https://www.vultr.com/docs/setup-nginx-rtmp-on-ubuntu-14-04
-apt-get install build-essential libpcre3 libpcre3-dev libssl-dev unzip software-properties-common
+apt-get install build-essential libpcre3 wget zip libpcre3-dev zlib1g-dev libxml2-dev libxslt1-dev libgd-dev libgeoip-dev libperl-dev libssl-dev unzip software-properties-common
 
 #Download the Nginx and Nginx-RTMP source.
 wget http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz
