@@ -1,18 +1,66 @@
+NGINX_VERSION=1.10.2
 #https://www.vultr.com/docs/setup-nginx-rtmp-on-ubuntu-14-04
 apt-get install build-essential libpcre3 libpcre3-dev libssl-dev unzip software-properties-common
-mkdir /usr/build
+
 #Download the Nginx and Nginx-RTMP source.
-wget http://nginx.org/download/nginx-1.7.8.tar.gz
-wget https://github.com/arut/nginx-rtmp-module/archive/master.zip
-wget https://github.com/kaltura/nginx-vod-module/archive/master.zip
+wget http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz
+wget https://github.com/arut/nginx-rtmp-module/archive/master.zip -O nginx-rtmp-module
+wget https://github.com/kaltura/nginx-vod-module/archive/master.zip -O nginx-vod-module
 #Extract the Nginx and Nginx-RTMP source.
-tar -zxvf nginx-1.7.8.tar.gz
-unzip master.zip
-unzip master.zip.1
+tar -zxvf nginx-$NGINX_VERSION.tar.gz
+unzip nginx-rtmp-module
+unzip nginx-vod-module
 #Switch to the Nginx directory.
-cd nginx-1.7.8
+cd nginx-$NGINX_VERSION
 #Add modules that Nginx will be compiled with. Nginx-RTMP is included.
-./configure --with-http_ssl_module --with-http_stub_status_module --with-http_secure_link_module --with-http_flv_module --with-http_mp4_module --add-module=../nginx-rtmp-module-master --add-module=../nginx-vod-module-master
+./configure \
+    --sbin-path=/usr/sbin/nginx \
+    --modules-path=/usr/lib/nginx/modules \
+    --conf-path=/etc/nginx/nginx.conf \
+    --error-log-path=/var/log/nginx/error.log \
+    --http-log-path=/var/log/nginx/access.log \
+    --pid-path=/var/run/nginx.pid \
+    --lock-path=/var/run/nginx.lock \
+    --http-client-body-temp-path=/var/cache/nginx/client_temp \
+    --http-proxy-temp-path=/var/cache/nginx/proxy_temp \
+    --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
+    --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
+    --http-scgi-temp-path=/var/cache/nginx/scgi_temp \
+    --user=nginx \
+    --group=nginx \
+    --with-ipv6 \
+    --with-http_ssl_module \
+    --with-http_realip_module \
+    --with-http_addition_module \
+    --with-http_sub_module \
+    --with-http_dav_module \
+    --with-http_flv_module \
+    --with-http_mp4_module \
+    --with-http_gunzip_module \
+    --with-http_gzip_static_module \
+    --with-http_random_index_module \
+    --with-http_secure_link_module \
+    --with-http_stub_status_module \
+    --with-http_auth_request_module \
+    --with-http_xslt_module \
+    --with-http_image_filter_module \
+    --with-http_geoip_module \
+    --with-http_perl_module \
+    --with-threads \
+    --with-stream \
+    --with-stream_ssl_module \
+    --with-stream_ssl_preread_module \
+    --with-stream_realip_module \
+    --with-stream_geoip_module \
+    --with-http_slice_module \
+    --with-mail \
+    --with-mail_ssl_module \
+    --with-compat \
+    --with-file-aio \
+    --with-http_v2_module \
+    --with-cc-opt="-O3" \
+    --add-module=../nginx-rtmp-module-master \
+    --add-module=../nginx-vod-module-master
 #Compile and install Nginx with Nginx-RTMP and Nginx-VOD
 make
 make install
